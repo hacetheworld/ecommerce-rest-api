@@ -1,42 +1,69 @@
 const cartModel = require("../model/cartModel")
 const jwt = require('jsonwebtoken')
+const {getUser} =require('../utils')
 const getAllCartItems = (req,res)=>{
-    const token =req.body.token || req.query.token || req.headers["x-access-token"];
-    const user = jwt.verify(token,process.env.SECRET_KEY)
+    const user=getUser(req).id
     if (user){
-        return res.json(cartModel.find(user.id))
+        return res.json(cartModel.find({user:user.id}).cart)
     }
-    return res.json([])
-
+    return res.status(200).json({message:"Cart is empty"})
 }
 
 const addToCart = async(req,res)=>{
-    const {price, productName, id} = req.body
-    let isProductExist = cartModel.find(id)
-    console.log(isProductExist)
-    // if(isProductExist){
-    //     await cartModel.findOneAndUpdate({productName}, {quentity:isProductExist.quentity+1}, {
-    //         new: true
-    //     });
-    //     res.json({
-    //         isProductExist
-    //     })
-    // }else{
-        const newProduct = new cartModel({price, productName, id})
-        await newProduct.save()
-        res.json({
-            newProduct
-        })
-    // }
+    const {productId,cartQuantity} = req.body
 
+    const userId=getUser(req).id
+    try{
+    let userCart = await cartModel.findOne({ user: userId });
+    if (!userCart){
+        userCart = new cartModel({user:userId})
+    }
+    const productIndex = userCart.cart.findIndex(
+    (item) => item.product.toString() === productId);
+    if (productIndex!==-1){
+    userCart.cart[productIndex].quantity += parseInt(cartQuantity);
+    if (userCart.cart[productIndex].quantity==0){
+        let st=productIndex
+        let e=productIndex
+        if (productIndex==0){
+            e+=1
+        }
+        userCart.cart.splice(st,e)
+        }
+    }
+    else{
+        const newProduct = {product:productId}
+        userCart.cart.push(newProduct)
+    }
 
+            await userCart.save()
+            return res.json(userCart)
+        }catch(err){
+            return res.status(500).json({message:err.message})
+        }
 
 }
-const updateToCart = (req,res)=>{
 
+const deleteToCart = async(req,res)=>{
+    const {productId} = req.body
+
+    const userId=getUser(req).id
+    try{
+    let userCart = await cartModel.findOne({ user: userId });
+    const productIndex = userCart.cart.findIndex(
+    (item) => item.product.toString() === productId);
+
+    let st=productIndex
+    let e=productIndex
+    if (productIndex==0){
+        e+=1
+    }
+    userCart.cart.splice(st,e)
+    await userCart.save()
+    return res.json(userCart)
+    }catch(err){
+        return res.status(500).json({message:err.message})
+    }
 }
-const deleteToCart = (req,res)=>{
 
-}
-
-module.exports = {getAllCartItems, addToCart, updateToCart, deleteToCart}
+module.exports = {getAllCartItems, addToCart, deleteToCart}

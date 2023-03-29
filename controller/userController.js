@@ -1,15 +1,15 @@
 const jwt = require("jsonwebtoken")
 const userModel = require("../model/userModel")
+const cloudinary = require('cloudinary').v2;
 
 const signUp = async(req,res)=>{
     // extract data from request body
     // const name = req.body.name;
     // const image = req.file;
     const {name, email, password} = req.body
-    // Email
-    const userImage=req.file
-    console.log(userImage)
+  console.log(req.file,"ueserimag")
     try{
+
         const user = await userModel.findOne({
           email: email
         });
@@ -18,7 +18,10 @@ const signUp = async(req,res)=>{
           message: "Failed! Email is already in use!"
         });
       }else{
-        const newUser = new userModel(req.body)
+        const cloudres=await cloudinary.uploader.upload(req.file.path);
+        const {secure_url} = cloudres
+        // console.log(secure_url,"secure_url")
+        const newUser = new userModel({name,email,password,userImage:secure_url})
         await newUser.save()
         const id = newUser._id
         const token = jwt.sign({email,id}, process.env.SECRET_KEY)
