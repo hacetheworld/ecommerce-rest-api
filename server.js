@@ -35,18 +35,25 @@ const userRouter = require("./router/userRouter")
 const cartRouter = require("./router/cartRouter")
 const productRouter = require("./router/productRouter")
 const contactRouter = require("./router/contactRouter")
+const orderRouter = require("./router/orderRouter")
 
 // AUTHENTICATION AND AUTHORIZATION Routing
 app.use("/api/v1/",upload.single('userImage'),userRouter)
 
-// Cart Routing
-app.use("/api/v1/cart",cartRouter)
 
 // Product Routing
 app.use("/api/v1/product",productRouter)
+// Cart Routing
+app.use("/api/v1/cart",cartRouter)
+
 
 // Contact Routing
 app.use("/api/v1/contactus",contactRouter)
+
+// order Routing
+app.use("/api/v1/order",orderRouter)
+
+
 // Satrt app
 const port=process.env.PORT
 app.listen(port,()=>{
