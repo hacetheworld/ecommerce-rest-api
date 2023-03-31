@@ -1,10 +1,13 @@
 const cartModel = require("../model/cartModel")
 const jwt = require('jsonwebtoken')
 const {getUser} =require('../utils')
-const getAllCartItems = (req,res)=>{
+const getAllCartItems = async(req,res)=>{
     const user=getUser(req).id
     if (user){
-        return res.json(cartModel.find({user:user.id}).cart)
+        const cartData = await cartModel.findOne({user}).populate({
+            path: 'cart.product',
+          })
+        return res.json(cartData.cart)
     }
     return res.status(200).json({message:"Cart is empty"})
 }
@@ -37,7 +40,10 @@ const addToCart = async(req,res)=>{
     }
 
             await userCart.save()
-            return res.json(userCart)
+            const cartData =  await userCart.populate({
+                path: 'cart.product',
+              })
+            return res.json(cartData.data)
         }catch(err){
             return res.status(500).json({message:err.message})
         }
@@ -60,7 +66,10 @@ const deleteToCart = async(req,res)=>{
     }
     userCart.cart.splice(st,e)
     await userCart.save()
-    return res.json(userCart)
+    const cartData =  await userCart.populate({
+        path: 'cart.product',
+      })
+    return res.json(cartData.cart)
     }catch(err){
         return res.status(500).json({message:err.message})
     }

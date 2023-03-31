@@ -7,7 +7,7 @@ const signUp = async(req,res)=>{
     // const name = req.body.name;
     // const image = req.file;
     const {name, email, password} = req.body
-  console.log(req.file,"ueserimag")
+  // console.log(req.file,"ueserimag")
     try{
 
         const user = await userModel.findOne({
@@ -48,12 +48,12 @@ const signIn = async(req,res)=>{
         const user = await userModel.findOne({
           email: email
         });
-        console.log(user)
 
       if (!user) {
         return res.status(400).json({
           message: "User does not exist"
         });
+
       }else{
         if (user.password !== password){
             return res.status(400).json({
@@ -64,7 +64,8 @@ const signIn = async(req,res)=>{
         const token = jwt.sign({email,id}, process.env.SECRET_KEY)
         return res.status(200).json({
             message: "user logged in successfully !!",
-            token
+            token,
+            newUser:user
         });
       }
 
