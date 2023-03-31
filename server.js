@@ -1,12 +1,8 @@
 require("dotenv").config()
 require('./db')
-require("./config")
 const express = require("express")
-const multer = require('multer');
 const app=express()
 const bodyParser = require('body-parser');
-const cloudinary = require('cloudinary').v2;
-
 
 // Basic middleware Setup
 // Add headers in order to perform all operation on API
@@ -18,8 +14,8 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // Configure Cloudinary
 // Configure Multer to handle file uploads
-const storage = multer.memoryStorage()
-const upload = multer({ storage: storage })
+// const storage = multer.memoryStorage()
+// const upload = multer({ storage: storage })
 
 // Routers
 const userRouter = require("./router/userRouter")
@@ -31,7 +27,7 @@ const orderRouter = require("./router/orderRouter")
 
 
 // AUTHENTICATION AND AUTHORIZATION Routing
-app.use("/api/v1/",upload.single('userImage'),userRouter)
+app.use("/api/v1/",userRouter)
 
 
 // Product Routing

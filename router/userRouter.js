@@ -2,7 +2,9 @@ const express = require("express")
 
 const router = express.Router()
 const {signUp, signIn} = require('../controller/userController')
-router.post('/signup',signUp)
+const imageUploader = require('../multer');
+
+router.post('/signup',imageUploader,signUp)
 
 router.post('/signin', signIn)
 

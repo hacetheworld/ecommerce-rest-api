@@ -1,9 +1,5 @@
 const jwt = require("jsonwebtoken")
 const userModel = require("../model/userModel")
-const cloudinary = require('cloudinary').v2;
-// const {getDataUri} =require('../utils')
-
-console.log("sdsf")
 const signUp = async(req,res)=>{
     // extract data from request body
     // const name = req.body.name;
@@ -19,14 +15,8 @@ const signUp = async(req,res)=>{
         });
       }else{
 
-        console.log(req.file.buffer)
-        // const file =  getDataUri(req);
-        // console.log(req.file,"req.file.path")
-
-        // const cloudres=await cloudinary.uploader.upload(file);
-        // const {secure_url} = cloudres
-        // console.log(secure_url,"secure_url")
-        const newUser = new userModel({name,email,password})
+        const url=req.file.path
+        const newUser = new userModel({name,email,password,userImage:url})
         await newUser.save()
         const id = newUser._id
         const token = jwt.sign({email,id}, process.env.SECRET_KEY)
@@ -39,7 +29,7 @@ const signUp = async(req,res)=>{
 
     } catch (error) {
       return res.status(500).json({
-        message: "Unable to validate Username!"
+        message: error.message
       });
     }
   };
