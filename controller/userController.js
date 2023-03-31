@@ -18,6 +18,7 @@ const signUp = async(req,res)=>{
           message: "Failed! Email is already in use!"
         });
       }else{
+
         const cloudres=await cloudinary.uploader.upload(req.file.path);
         const {secure_url} = cloudres
         // console.log(secure_url,"secure_url")
