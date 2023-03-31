@@ -37,9 +37,7 @@ const productRouter = require("./router/productRouter")
 const contactRouter = require("./router/contactRouter")
 const orderRouter = require("./router/orderRouter")
 
-app.use("/", (req, res)=> {
-    res.send("welcomes at ecommerce rest api")
-})
+
 
 // AUTHENTICATION AND AUTHORIZATION Routing
 app.use("/api/v1/",upload.single('userImage'),userRouter)
@@ -56,6 +54,10 @@ app.use("/api/v1/contactus",contactRouter)
 
 // order Routing
 app.use("/api/v1/order",orderRouter)
+
+app.use("*", (req, res)=> {
+    res.send("welcomes at ecommerce rest api")
+})
 
 
 // Satrt app

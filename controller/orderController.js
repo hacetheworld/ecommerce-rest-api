@@ -1,6 +1,6 @@
 const orderModel = require("../model/orderModel")
 const cartModel = require("../model/cartModel")
-const sendEmail =require('../mailSent')
+const transporter =require('../mailSent')
 const {getUser} =require('../utils')
 const orderPlace = async(req, res) => {
     const userId=getUser(req).id
@@ -28,7 +28,13 @@ const orderPlace = async(req, res) => {
             await userOrder.save()
             await userCarts.save()
             // sendEmail(to, "confirming order", "thanks for the order")
-
+            const mailOptions = {
+                from: 'majay1638@gmail.com',
+                to: to,
+                subject: 'Order Confirmation',
+                text: `Thank you for your order! Your order total is $ ${total}.`
+              };
+            await transporter.sendMail(mailOptions);
             return res.json({message:"order placed"})
         }
         return res.json({message:"Cart is empty please add to cart first"})
