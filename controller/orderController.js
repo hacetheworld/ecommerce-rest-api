@@ -28,13 +28,13 @@ const orderPlace = async(req, res) => {
             await userOrder.save()
             await userCarts.save()
             // sendEmail(to, "confirming order", "thanks for the order")
-            const mailOptions = {
-                from: 'majay1638@gmail.com',
-                to: to,
-                subject: 'Order Confirmation',
-                text: `Thank you for your order! Your order total is $ ${total}.`
-              };
-            await transporter.sendMail(mailOptions);
+            // const mailOptions = {
+            //     from: 'majay1638@gmail.com',
+            //     to: to,
+            //     subject: 'Order Confirmation',
+            //     text: `Thank you for your order! Your order total is $ ${total}.`
+            //   };
+            // await transporter.sendMail(mailOptions);
             return res.json({message:"order placed"})
         }
         return res.json({message:"Cart is empty please add to cart first"})
