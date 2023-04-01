@@ -40,9 +40,14 @@ const addToCart = async(req,res)=>{
         }
 
             await userCart.save()
-                const cartData =  await userCart.populate({
-                        path: 'cart.product',
-                        })
+
+            const cartData = await cartModel.findOne({user}).populate({
+                path: 'cart.product',
+              })
+            // const cartData =  await userCart.populate({
+            //         path: 'cart.product',
+            //         })
+            console.log(cartData,"cartdata.catr")
             return res.status(200).json(cartData.cart)
         }catch(err){
             return res.status(500).json({message:err.message})
