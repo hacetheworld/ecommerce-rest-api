@@ -29,20 +29,20 @@ const ProductModel = require('../model/productModel')
  const getProductById = (async(req, res)=> {
     try{
         const id = req.params.id
-        const Product = await ProductModel.find({_id:id})
+        const Product = await ProductModel.findOne({_id:id})
         console.log(Product,"Product")
         if(Product){
             res.status(200).json(
                 Product
             )
         }else{
-            res.status(400).json(
+            res.status(200).json(
                 {message: "product not found !!"}
             )
         }
 
     }catch(error){
-        res.status(400).json({
+        res.status(500).json({
             message:error.message
         })
     }
