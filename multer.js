@@ -21,7 +21,6 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage }).single('userImage');
 
-
 module.exports = (req, res, next) => {
   upload(req, res, (err) => {
     if (err) return next(err);

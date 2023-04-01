@@ -10,7 +10,7 @@ const signUp = async(req,res)=>{
 
         const user = await userModel.findOne({email});
       if (user) {
-        return res.status(400).json({
+        return res.status(200).json({
           message: "Failed! Email is already in use!"
         });
       }else{
@@ -45,13 +45,13 @@ const signIn = async(req,res)=>{
         });
 
       if (!user) {
-        return res.status(400).json({
+        return res.status(200).json({
           message: "User does not exist"
         });
 
       }else{
         if (user.password !== password){
-            return res.status(400).json({
+            return res.status(200).json({
                 message: "password does not matched!"
               });
         }
@@ -66,7 +66,7 @@ const signIn = async(req,res)=>{
 
     } catch (error) {
       return res.status(500).json({
-        message: "Unable to validate user!!"
+        message: error.message
       });
     }
 
