@@ -41,7 +41,7 @@ const addToCart = async(req,res)=>{
 
             await userCart.save()
 
-            const cartData = await cartModel.findOne({user}).populate({
+            const cartData = await cartModel.findOne({user:userId}).populate({
                 path: 'cart.product',
               })
             // const cartData =  await userCart.populate({
