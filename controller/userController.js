@@ -38,6 +38,7 @@ const signUp = async(req,res)=>{
 const signIn = async(req,res)=>{
     // extract data from request body
     const { email, password } = req.body
+    console.log(email,password,"sfsf")
     // Email
     try{
         const user = await userModel.findOne({
