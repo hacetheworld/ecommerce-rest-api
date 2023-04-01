@@ -39,12 +39,11 @@ const addToCart = async(req,res)=>{
             userCart.cart.push(newProduct)
         }
 
-    await userCart.save()
-    const cartData =  await userCart.populate({
-        path: 'cart.product',
-        })
-    console.log(cartData.cart)
-    return res.json(cartData.cart)
+            await userCart.save()
+                const cartData =  await userCart.populate({
+                        path: 'cart.product',
+                        })
+            return res.status(200).json(cartData.cart)
         }catch(err){
             return res.status(500).json({message:err.message})
         }
