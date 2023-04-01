@@ -24,26 +24,27 @@ const addToCart = async(req,res)=>{
     const productIndex = userCart.cart.findIndex(
     (item) => item.product.toString() === productId);
     if (productIndex!==-1){
-    userCart.cart[productIndex].quantity += parseInt(cartQuantity);
-    if (userCart.cart[productIndex].quantity==0){
-        let st=productIndex
-        let e=productIndex
-        if (productIndex==0){
-            e+=1
+        userCart.cart[productIndex].quantity += parseInt(cartQuantity);
+        if (userCart.cart[productIndex].quantity==0){
+            let st=productIndex
+            let e=productIndex
+            if (productIndex==0){
+                e+=1
+            }
+            userCart.cart.splice(st,e)
+            }
         }
-        userCart.cart.splice(st,e)
+        else{
+            const newProduct = {product:productId}
+            userCart.cart.push(newProduct)
         }
-    }
-    else{
-        const newProduct = {product:productId}
-        userCart.cart.push(newProduct)
-    }
 
-            await userCart.save()
-            const cartData =  await userCart.populate({
-                path: 'cart.product',
-              })
-            return res.json(cartData.data)
+    await userCart.save()
+    const cartData =  await userCart.populate({
+        path: 'cart.product',
+        })
+    console.log(cartData.cart)
+    return res.json(cartData.cart)
         }catch(err){
             return res.status(500).json({message:err.message})
         }
