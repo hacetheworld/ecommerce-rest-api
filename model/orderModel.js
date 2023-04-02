@@ -16,7 +16,8 @@ const orderSchema = new mongoose.Schema({
             price:{type:Number},
         }
     ],
-    total:{type:Number}
+    total:{type:Number},
+    shippingAddress:{type:String}
 
 })
 

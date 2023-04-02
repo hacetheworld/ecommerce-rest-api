@@ -5,6 +5,7 @@ const {getUser} =require('../utils')
 const orderPlace = async(req, res) => {
     const userId=getUser(req).id
     const to=getUser(req).email
+    const { shippingAddress } = req.body
 
     const userCarts = await cartModel.findOne({user:userId}).populate({
         path: 'cart.product',
@@ -21,7 +22,7 @@ const orderPlace = async(req, res) => {
             })
             userCarts.cart=[]
             // console.log(total,"sdf")
-            const userOrder = new orderModel({user:userId,total})
+            const userOrder = new orderModel({user:userId,total,shippingAddress})
             carts.forEach(product => {
                 userOrder.products.push(product)
             });
