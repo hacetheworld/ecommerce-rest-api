@@ -1,48 +1,38 @@
 const orderModel = require("../model/orderModel")
-const cartModel = require("../model/cartModel")
-const transporter =require('../mailSent')
+const productModel = require("../model/productModel")
 const {getUser} =require('../utils')
 const orderPlace = async(req, res) => {
     const userId=getUser(req).id
-    const to=getUser(req).email
-    const { shippingAddress } = req.body
+    try {
+        // Extract data from request body
+        const { orderItems,totalPrice,shippingAddress } = req.body;
+        // Create new order object
+        // console.log(orderItems,"orderItems")
+        const order = new orderModel({
+          user: userId,
+          orderItems: orderItems.map(item => ({
+            product: item.productId,
+            quantity: item.quantity
+          })),
+          totalPrice,
+          shippingAddress
+        });
 
-    const userCarts = await cartModel.findOne({user:userId}).populate({
-        path: 'cart.product',
-      });
-    // console.log(userCarts.cart[0].product,"userCarts")
-    // return res.json({message:"dsdfnjskf"})
-    try{
-        if (userCarts){
-            let total=0
-            // console.log(userCarts.populate('product'))
-            const carts = userCarts.cart.map((productItem)=>{
-                total+=(productItem.product.price*productItem.quantity)
-                return productItem
-            })
-            userCarts.cart=[]
-            // console.log(total,"sdf")
-            const userOrder = new orderModel({user:userId,total,shippingAddress})
-            carts.forEach(product => {
-                userOrder.products.push(product)
-            });
-            await userOrder.save()
-            await userCarts.save()
-            // sendEmail(to, "confirming order", "thanks for the order")
-            // const mailOptions = {
-            //     from: 'majay1638@gmail.com',
-            //     to: to,
-            //     subject: 'Order Confirmation',
-            //     text: `Thank you for your order! Your order total is $ ${total}.`
-            //   };
-            // await transporter.sendMail(mailOptions);
-            return res.json({message:"order placed"})
+        // Save order to database
+        await order.save();
+        // Update product quantities
+        for (const item of orderItems) {
+          const product = await productModel.findById(item.productId);
+          product.quantity -= item.quantity;
+          await product.save();
         }
-        return res.json({message:"Cart is empty please add to cart first"})
-
-    }catch(err){
-        return res.status(500).json({message:err.message})
-    }
+        // Send success response
+        // console.log("heelo")
+        res.status(201).json({ message: 'Order created successfully', order });
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Failed to create order' });
+      }
 
 }
 

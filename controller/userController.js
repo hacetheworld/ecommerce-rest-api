@@ -40,7 +40,7 @@ const signUp = async(req,res)=>{
 const signIn = async(req,res)=>{
     // extract data from request body
     const { email, password } = req.body
-    console.log(email,password,"sfsf")
+    // console.log(email,password,"sfsf")
     // Email
     try{
         const user = await userModel.findOne({
@@ -54,7 +54,9 @@ const signIn = async(req,res)=>{
 
       }else{
         const hash = user.password
+
         bcrypt.compare(password, hash, function(error, isMatch) {
+          console.log({email,password,isMatch},"in password match")
           if (error) {
             throw error
           } else if (!isMatch) {

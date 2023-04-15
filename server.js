@@ -3,7 +3,6 @@ require('./db')
 const express = require("express")
 const app=express()
 const bodyParser = require('body-parser');
-
 // Basic middleware Setup
 // Add headers in order to perform all operation on API
 // Because CORS Thing (Google it if you do not know)
@@ -22,7 +21,8 @@ const userRouter = require("./router/userRouter")
 const cartRouter = require("./router/cartRouter")
 const productRouter = require("./router/productRouter")
 const contactRouter = require("./router/contactRouter")
-const orderRouter = require("./router/orderRouter")
+const orderRouter = require("./router/orderRouter");
+const authenticateToken = require("./middleware/authentication");
 
 
 
@@ -40,7 +40,7 @@ app.use("/api/v1/cart",cartRouter)
 app.use("/api/v1/contactus",contactRouter)
 
 // order Routing
-app.use("/api/v1/order",orderRouter)
+app.use("/api/v1/order",authenticateToken,orderRouter)
 
 app.use("*", (req, res)=> {
     res.send("welcomes at ecommerce rest api")
