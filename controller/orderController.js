@@ -21,11 +21,11 @@ const orderPlace = async(req, res) => {
         // Save order to database
         await order.save();
         // Update product quantities
-        for (const item of orderItems) {
-          const product = await productModel.findById(item.productId);
-          product.quantity -= item.quantity;
-          await product.save();
-        }
+        // for (const item of orderItems) {
+        //   const product = await productModel.findById(item.productId);
+        //   product.quantity -= item.quantity;
+        //   await product.save();
+        // }
         // Send success response
         // console.log("heelo")
         res.status(201).json({ message: 'Order created successfully', order });
