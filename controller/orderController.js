@@ -31,7 +31,7 @@ const orderPlace = async(req, res) => {
         res.status(201).json({ message: 'Order created successfully', order });
       } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Failed to create order' });
+        res.status(500).json({ message: 'Failed to create order',errorMessage:error.message });
       }
 
 }
