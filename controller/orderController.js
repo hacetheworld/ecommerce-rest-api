@@ -1,6 +1,18 @@
 const orderModel = require("../model/orderModel")
 const productModel = require("../model/productModel")
 const {getUser} =require('../utils')
+
+const getOrder = async(req,res)=>{
+  const userId=getUser(req).id
+    try{
+        const order = await orderModel.find({user:userId}).populate('orderItems.product');
+        return res.json(order)
+
+    }catch(err){
+      return res.json({message:err.messsage})
+    }
+
+}
 const orderPlace = async(req, res) => {
     const userId=getUser(req).id
     try {
@@ -36,4 +48,4 @@ const orderPlace = async(req, res) => {
 
 }
 
-module.exports = {orderPlace}
+module.exports = {orderPlace,getOrder}
